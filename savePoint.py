@@ -38,7 +38,7 @@ if os.path.isfile(POINTS_PATH):
 
 else:
   # make empty dataFrame
-  points = pd.DataFrame(columns=['point name', 'x', 'y', 'z', 'roll', 'pitch', 'yaw'])
+  points = pd.DataFrame(columns=['name', 'x', 'y', 'z', 'roll', 'pitch', 'yaw'])
   # make csf file from dataFrame
   points.to_csv(POINTS_PATH, index=False)
     
