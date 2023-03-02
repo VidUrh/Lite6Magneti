@@ -24,22 +24,20 @@ class PointGui:
     for i in range(self.cntRows):
       self.master.rowconfigure(i, weight=1)
 
-    # draw grid lines
-    for i in range(self.cntColumns):
-      tk.Frame(self.master, height=1, width=1, bg="blue").grid(row=0, column=i, rowspan=12, sticky="ns")
-    for i in range(self.cntRows):
-      tk.Frame(self.master, height=1, width=1, bg="red").grid(row=i, column=0, columnspan=12, sticky="we")
+    # # draw grid lines
+    # for i in range(self.cntColumns):
+    #   tk.Frame(self.master, height=1, width=1, bg="blue").grid(row=0, column=i, rowspan=12, sticky="ns")
+    # for i in range(self.cntRows):
+    #   tk.Frame(self.master, height=1, width=1, bg="red").grid(row=i, column=0, columnspan=12, sticky="we")
 
     # ------------------ Labels ------------------
     self.coordRow = 2 # +1 is reserved for coord values
     self.chooseRow = 1
-    self.buttonRow = 6
-    self.buttonColumn = 2
+    self.buttonRow = 0
+    self.buttonColumn = 3
 
     self.label1 = tk.Label(self.master, text="Point name:")
     self.label1.grid(row=0, column=0, sticky="nsew")
-    self.label3 = tk.Label(self.master, text="Point position:")
-    self.label3.grid(row=0, column=4, sticky="nsew")
     self.label4 = tk.Label(self.master, text="X/1")
     self.label4.grid(row=self.coordRow, column=0, sticky="nsew")
     self.label5 = tk.Label(self.master, text="Y/2	")
@@ -59,12 +57,6 @@ class PointGui:
 
     # make drpdown menu for point names
     self.updateOptionMenu()
-
-    # make drpdown menu for point types
-    self.DDpointType = tk.StringVar(self.master)
-    self.DDpointType.set(self.points.points['type'].values[0])
-    self.DDpointTypeMenu = tk.OptionMenu(self.master, self.DDpointType, *['coordinate','angle'])
-    self.DDpointTypeMenu.grid(row=0, column=6, sticky="nsew")
 
     # make empty entry for point position
     self.pointPosition = []
@@ -113,7 +105,7 @@ class PointGui:
     self.pointName.set(self.points.points['name'].values[0])
     self.pointNameMenu = tk.OptionMenu(self.master, self.pointName, 
                                        *self.points.points['name'].values, command=self.updatePointPosition)
-    self.pointNameMenu.grid(row=self.chooseRow, column=0, sticky="nsew")
+    self.pointNameMenu.grid(row=0, column=1, sticky="nsew")
 
   def updatePointPosition(self, pointName):
     print(self.pointName)
@@ -218,10 +210,14 @@ class PointGui:
     pass
 
   def removePoint(self):
-    pass
+    try:
+      self.points.removePoint(self.pointName.get())
+      self.updateOptionMenu()
+    except:
+      print("No point exists to remove")
 
   def savePoints(self):
-    pass
+    self.points.savePoints()
 
 
 

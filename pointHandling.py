@@ -47,7 +47,7 @@ class pointHandler:
       print("Point with this name doesn't exist!")
       return False
     
-  def deletePoint(self, pointName):
+  def removePoint(self, pointName):
     # check if point with this name already exists
     if pointName in self.points['name'].values:
       # delete point from dataFrame
@@ -56,6 +56,10 @@ class pointHandler:
     else:
       print("Point with this name doesn't exist!")
       return False
+    
+  def savePoints(self):
+    # save dataFrame to csv file
+    self.points.to_csv(POINTS_PATH, index=False)
     
   def __del__(self):
     # save dataFrame to csv file
