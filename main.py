@@ -43,10 +43,10 @@ def main():
       robot.moveL(pose = tuple(points[points['name'] == 'nadOhisjem2'].values[0][1:]), speed=SPEED_MIDDLE, radius=20, wait=False)
 
       # move to lepljenje
-      robot.moveJoint(pose = tuple(points[points['name'] == 'doLepila1.1'].values[0][1:7]), speed=SPEED_FAST, radius=40, wait=False)
+      robot.moveJoint(pose = tuple(points[points['name'] == 'doLepila1.1'].values[0][1:]), speed=SPEED_FAST, radius=40, wait=False)
       #robot.moveJ(pose = tuple(points[points['name'] == 'doLepila1.1'].values[0][1:]), speed=SPEED_VERY_SLOW, radius=25, wait=False)
       robot.moveJ(pose = tuple(points[points['name'] == 'doLepila2'].values[0][1:]), speed=SPEED_FAST, radius=60, wait=False)
-      robot.moveJoint(pose = tuple(points[points['name'] == 'podLepilom'].values[0][1:7]), speed=SPEED_VERY_FAST, wait=True)
+      robot.moveJoint(pose = tuple(points[points['name'] == 'podLepilom'].values[0][1:]), speed=SPEED_VERY_FAST, wait=True)
 
       robot.moveL(pose = tuple(points[points['name'] == 'nanesiLepilo'].values[0][1:]), speed=10, wait=True)
       time.sleep(0.1)

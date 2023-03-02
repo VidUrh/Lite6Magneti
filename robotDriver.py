@@ -131,8 +131,8 @@ class Robot:
         self.robot.set_position(x=x, y=y, z=z, roll=roll, pitch=pitch, yaw=yaw, speed=speed,
                                 relative=relative, radius=radius, wait=wait, mv_cmd=1)
 
-    def moveJ(self, x=None, y=None, z=None, roll=None, pitch=None, yaw=None, pose=None, speed=None,
-              wait=True, radius=0, is_radian=False):
+    def moveJ(self, x=None, y=None, z=None, roll=None, pitch=None, yaw=None, pose=None, pointType=None, 
+              speed=None, wait=True, radius=0, is_radian=False):
         '''
         Move robot to position in joint motion
         
@@ -142,37 +142,52 @@ class Robot:
         :param roll: roll angle
         :param pitch: pitch angle
         :param yaw: yaw angle
-        :param pose: list of x, y, z, roll, pitch, yaw (alternative to separate parameters)
+        :param pose: list of x, y, z, roll, pitch, yaw, (pointType) (alternative to separate parameters)
+        :param pointType: 'coordinate' or 'angle' (angle if point is store in joint angles)
         :param speed: speed of motion
         :param wait: if True, wait for motion to complete
         :param is_radian: if True, angles are in radians
         :return: None
         '''
-        self.currentPosition = self.robot.get_position()
-        if pose == None:
-            # check if any of the parameters are None and set them to current position
-            if x == None:
-                x = self.currentPosition[1][0]
-            if y == None:
-                y = self.currentPosition[1][1]
-            if z == None:
-                z = self.currentPosition[1][2]
-            if roll == None:
-                roll  = self.currentPosition[1][3]
-            if pitch == None:
-                pitch = self.currentPosition[1][4]
-            if yaw == None:
-                yaw   = self.currentPosition[1][5]
+        if len(pose) == 7:
+            # get pointType from pose
+            pointType = pose[6]
+            
+            # remove pointType from pose
+            pose = pose[:6]
 
-            pose = [x, y, z, roll, pitch, yaw]
+        if pointType == 'coordinate':
+            if pose == None:
+                self.currentPosition = self.robot.get_position()
+                # check if any of the parameters are None and set them to current position
+                if x == None:
+                    x = self.currentPosition[1][0]
+                if y == None:
+                    y = self.currentPosition[1][1]
+                if z == None:
+                    z = self.currentPosition[1][2]
+                if roll == None:
+                    roll  = self.currentPosition[1][3]
+                if pitch == None:
+                    pitch = self.currentPosition[1][4]
+                if yaw == None:
+                    yaw   = self.currentPosition[1][5]
+
+                pose = [x, y, z, roll, pitch, yaw]
+
+            code, pose = self.robot.get_inverse_kinematics(pose, input_is_radian=is_radian, return_is_radian=False)
+            self.robot.set_servo_angle(angle=pose, speed=speed, wait=wait, radius=radius, is_radian=False)
+
+        elif pointType == 'angle':
+            if pose != None:
+                self.robot.set_servo_angle(angle=pose , speed=speed, wait=wait, radius=radius, is_radian=False)
+
         else:
-            pose = pose
+            raise Exception('Wrong point type')
 
-        code, pose = self.robot.get_inverse_kinematics(pose, input_is_radian=is_radian, return_is_radian=False)
-        self.robot.set_servo_angle(angle=pose, speed=speed, wait=wait, radius=radius, is_radian=False)
 
     def moveJoint(self, joint1=None, joint2=None, joint3=None, joint4=None, joint5=None, joint6=None,
-                  speed=None, pose=None, wait=True, radius=0, is_radian=False):
+                  speed=None, pose=None, pointType=None, wait=True, radius=0, is_radian=False):
         '''
         Move robot to position with joint angles
         
@@ -183,16 +198,20 @@ class Robot:
         :param joint5: joint 5 angle
         :param joint6: joint 6 angle
         :param pose: list of joint angles (alternative to separate parameters)
+        :param pointType: 'coordinate' or 'angle' (angle if point is store in joint angles)
         :param speed: speed of motion
         :param wait: if True, wait for motion to complete
         :param radius: radius of circular motion
         :param is_radian: if True, angles are in radians
         :return: None
         '''
-        if pose == None:
-            pose = [joint1, joint2, joint3, joint4, joint5, joint6]
+        if pointType == 'angle':
+            if pose == None:
+                pose = [joint1, joint2, joint3, joint4, joint5, joint6]
 
-        self.robot.set_servo_angle(angle=pose, speed=speed, wait=wait, radius=radius, is_radian=is_radian)
+            self.robot.set_servo_angle(angle=pose, speed=speed, wait=wait, radius=radius, is_radian=is_radian)
+        else:
+            raise Exception('Wrong point type')
 
     def pallet(self):
         self.setWorldOffset([268.989075, 108.34774, -10.139146, -
