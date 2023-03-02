@@ -211,6 +211,10 @@ class PointGui:
       self.addPointTypeMenu.config(bg="red")
 
   def editPoint(self):
+    self.points.editPoint(self.pointName.get(), [self.pointX.get(), self.pointY.get(),
+                              self.pointZ.get(), self.pointRoll.get(), self.pointPitch.get(),
+                              self.pointYaw.get()])
+
     pass
 
   def removePoint(self):

@@ -30,19 +30,18 @@ class pointHandler:
                                columns=self.columns)], ignore_index=True)
 
       print("Point added!")
-      
+
     else:
       print("Point with this name already exists!")
       return False
     
-  def editPoint(self, pointName, pointType, pointPosition):
+  def editPoint(self, pointName, pointPosition):
     # check if point with this name already exists
     if pointName in self.points['name'].values:
-      # save point to dataFrame with concat function
-      self.points = pd.concat([self.points, pd.DataFrame([
-                              [pointName, pointPosition[0], pointPosition[1], pointPosition[2], 
-                               pointPosition[3], pointPosition[4], pointPosition[5], pointType]],
-                               columns=self.columns)], ignore_index=True)
+      # edit point with same name (use old pointType)
+      print(self.points.loc[self.points['name'] == pointName, 'x':'type'])
+      self.points.loc[self.points['name'] == pointName, 'x':'yaw'] = pointPosition
+      
       
     else:
       print("Point with this name doesn't exist!")
