@@ -3,7 +3,7 @@ from parameters import *
 import pandas as pd
 import robotDriver as rd
 
-columns = ['name', 'x', 'y', 'z', 'roll', 'pitch', 'yaw', 'comment']
+columns = ['name', 'x', 'y', 'z', 'roll', 'pitch', 'yaw', 'type']
 
 # check if csv file with points exists
 if os.path.isfile(POINTS_PATH):

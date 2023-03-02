@@ -1,4 +1,4 @@
-name,x,y,z,roll,pitch,yaw,comment
+name,x,y,z,roll,pitch,yaw,type
 start,132.743057,-116.65361,354.044006,161.200759,-27.242997,-12.450086,coordinate
 nadOhisjem,35.694103,-339.606934,290.053986,-180.00002,0.0,-0.0,coordinate
 prijemOhisja,35.700001,-339.600006,277.700012,-180.00002,0.0,-0.0,coordinate
