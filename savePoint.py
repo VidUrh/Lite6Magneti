@@ -3,7 +3,7 @@ from parameters import *
 import pandas as pd
 import robotDriver as rd
 
-columns = ['name', 'x', 'y', 'z', 'roll', 'pitch', 'yaw']
+columns = ['name', 'x', 'y', 'z', 'roll', 'pitch', 'yaw', 'comment']
 
 # check if csv file with points exists
 if os.path.isfile(POINTS_PATH):
@@ -31,7 +31,7 @@ if os.path.isfile(POINTS_PATH):
         # save point to dataFrame with concat function
         points = pd.concat([points, pd.DataFrame([[pointName, currentPosition[0], currentPosition[1],
                                                   currentPosition[2], currentPosition[3], currentPosition[4],
-                                                  currentPosition[5]]], columns=columns)], ignore_index=True)
+                                                  currentPosition[5], 'coordinate']], columns=columns)], ignore_index=True)
     
       elif chose == '2':
         # read current position of robot
@@ -40,7 +40,7 @@ if os.path.isfile(POINTS_PATH):
         # save point to dataFrame with concat function
         points = pd.concat([points, pd.DataFrame([[pointName, currentJoints[0], currentJoints[1],
                                                   currentJoints[2], currentJoints[3], currentJoints[4],
-                                                  currentJoints[5]]], columns=columns)], ignore_index=True) 
+                                                  currentJoints[5], 'angle']], columns=columns)], ignore_index=True) 
       
     else:
       print("Point with this name already exists!")
