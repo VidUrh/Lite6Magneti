@@ -3,18 +3,18 @@ This script loads all the points from the points.csv file and converts them to o
 Usage:
     ```python
         from loadPoints import points
-
         # get the point with name "point1"
         point1 = points["point1"] # returns the Point object
     ```
 """
 import csv
-from pprint import pprint
+
 
 
 class Point:
     def __init__(self, name, x, y, z, rx, ry, rz):
         self.name = name
+
         self.x = float(x)
         self.y = float(y)
         self.z = float(z)
@@ -37,3 +37,4 @@ points = {point[0]: Point(point[0], point[1], point[2], point[3], point[4],
                           point[5], point[6]) for point in csv.reader(open("points.csv")) if point[0] != "name"}
 
 print(*points.values(), sep='\n')
+
