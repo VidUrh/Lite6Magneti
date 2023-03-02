@@ -88,12 +88,33 @@ class PointGui:
     self.pointType = tk.Entry(self.master, textvariable=self.pointPosition[6], width=self.entryWidth)
     self.pointType.grid(row=self.coordRow+1, column=6, sticky="w")
 
+    self.PLUS_COLOR = "#43b0f1"
+    self.MINUS_COLOR = "#43b0f1"
     # add small + and - buttons to change point position near each entry
-    self.pointXplus = tk.Button(self.master, text="+", command=lambda: self.changePointPosition('x', '+'), width=1, height=1)
+    self.pointXplus = tk.Button(self.master, text="+", command=lambda: self.changePointPosition('x', '+'), width=1, height=1, bg=self.PLUS_COLOR)
     self.pointXplus.grid(row=self.coordRow+1, column=0, sticky="ne", padx=3)
-    self.pointXminus = tk.Button(self.master, text="-", command=lambda: self.changePointPosition('x', '-'), width=1, height=1)
+    self.pointXminus = tk.Button(self.master, text="-", command=lambda: self.changePointPosition('x', '-'), width=1, height=1, bg=self.MINUS_COLOR)
     self.pointXminus.grid(row=self.coordRow+1, column=0, sticky="se", padx=3)
-    
+    self.pointYplus = tk.Button(self.master, text="+", command=lambda: self.changePointPosition('y', '+'), width=1, height=1, bg=self.PLUS_COLOR)
+    self.pointYplus.grid(row=self.coordRow+1, column=1, sticky="ne", padx=3)
+    self.pointYminus = tk.Button(self.master, text="-", command=lambda: self.changePointPosition('y', '-'), width=1, height=1, bg=self.MINUS_COLOR)
+    self.pointYminus.grid(row=self.coordRow+1, column=1, sticky="se", padx=3)
+    self.pointZplus = tk.Button(self.master, text="+", command=lambda: self.changePointPosition('z', '+'), width=1, height=1, bg=self.PLUS_COLOR)
+    self.pointZplus.grid(row=self.coordRow+1, column=2, sticky="ne", padx=3)
+    self.pointZminus = tk.Button(self.master, text="-", command=lambda: self.changePointPosition('z', '-'), width=1, height=1, bg=self.MINUS_COLOR)
+    self.pointZminus.grid(row=self.coordRow+1, column=2, sticky="se", padx=3)
+    self.pointRollplus = tk.Button(self.master, text="+", command=lambda: self.changePointPosition('roll', '+'), width=1, height=1, bg=self.PLUS_COLOR)
+    self.pointRollplus.grid(row=self.coordRow+1, column=3, sticky="ne", padx=3)
+    self.pointRollminus = tk.Button(self.master, text="-", command=lambda: self.changePointPosition('roll', '-'), width=1, height=1, bg=self.MINUS_COLOR)
+    self.pointRollminus.grid(row=self.coordRow+1, column=3, sticky="se", padx=3)
+    self.pointPitchplus = tk.Button(self.master, text="+", command=lambda: self.changePointPosition('pitch', '+'), width=1, height=1, bg=self.PLUS_COLOR)
+    self.pointPitchplus.grid(row=self.coordRow+1, column=4, sticky="ne", padx=3)
+    self.pointPitchminus = tk.Button(self.master, text="-", command=lambda: self.changePointPosition('pitch', '-'), width=1, height=1, bg=self.MINUS_COLOR)
+    self.pointPitchminus.grid(row=self.coordRow+1, column=4, sticky="se", padx=3)
+    self.pointYawplus = tk.Button(self.master, text="+", command=lambda: self.changePointPosition('yaw', '+'), width=1, height=1, bg=self.PLUS_COLOR)
+    self.pointYawplus.grid(row=self.coordRow+1, column=5, sticky="ne", padx=3)
+    self.pointYawminus = tk.Button(self.master, text="-", command=lambda: self.changePointPosition('yaw', '-'), width=1, height=1, bg=self.MINUS_COLOR)
+    self.pointYawminus.grid(row=self.coordRow+1, column=5, sticky="se", padx=3)
 
       
     # make buttons
@@ -169,6 +190,61 @@ class PointGui:
       # set new value of x
       self.pointX.delete(0, tk.END)
       self.pointX.insert(0, self.coordValue)
+    
+    elif whichCoord == 'y':
+      # get current value of y
+      self.coordValue = float(self.pointY.get())
+      
+      # add or subtract 0.1
+      self.coordValue = round(self.doMath(operation, self.coordValue), 2)
+
+      # set new value of y
+      self.pointY.delete(0, tk.END)
+      self.pointY.insert(0, self.coordValue)
+    
+    elif whichCoord == 'z':
+      # get current value of z
+      self.coordValue = float(self.pointZ.get())
+      
+      # add or subtract 0.1
+      self.coordValue = round(self.doMath(operation, self.coordValue), 2)
+
+      # set new value of z
+      self.pointZ.delete(0, tk.END)
+      self.pointZ.insert(0, self.coordValue)
+
+    elif whichCoord == 'roll':
+      # get current value of roll
+      self.coordValue = float(self.pointRoll.get())
+      
+      # add or subtract 0.1
+      self.coordValue = round(self.doMath(operation, self.coordValue), 2)
+
+      # set new value of roll
+      self.pointRoll.delete(0, tk.END)
+      self.pointRoll.insert(0, self.coordValue)
+
+    elif whichCoord == 'pitch':
+      # get current value of pitch
+      self.coordValue = float(self.pointPitch.get())
+      
+      # add or subtract 0.1
+      self.coordValue = round(self.doMath(operation, self.coordValue), 2)
+
+      # set new value of pitch
+      self.pointPitch.delete(0, tk.END)
+      self.pointPitch.insert(0, self.coordValue)
+
+    elif whichCoord == 'yaw':
+      # get current value of yaw
+      self.coordValue = float(self.pointYaw.get())
+      
+      # add or subtract 0.1
+      self.coordValue = round(self.doMath(operation, self.coordValue), 2)
+
+      # set new value of yaw
+      self.pointYaw.delete(0, tk.END)
+      self.pointYaw.insert(0, self.coordValue)
 
   def doMath(self, operation, value):
     self.coordValue = value
@@ -196,7 +272,7 @@ class PointGui:
         self.robot.moveJ(pose=[self.pointX.get(), self.pointY.get(), self.pointZ.get(),
                                 self.pointRoll.get(), self.pointPitch.get(), self.pointYaw.get()],
                                 pointType=self.pointType.get(), speed=self.angleSpeed.get())
-        
+                                
     else:
       print("Robot not connected")
 
