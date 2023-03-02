@@ -1,8 +1,12 @@
 import tkinter as tk
 import pointHandling as ph
+import robotDriver as rd
+from parameters import *
 
 class PointGui:
-  def __init__(self):
+  def __init__(self, robot=None):
+    self.robot = robot
+
     # ------------------ GUI ------------------
     self.master = tk.Tk()
     self.master.title("Robot calibration")
@@ -35,6 +39,8 @@ class PointGui:
     self.chooseRow = 1
     self.buttonRow = 0
     self.buttonColumn = 3
+    self.speedButtonColumn = 2
+    self.speedButtonRow = 5
 
     self.label1 = tk.Label(self.master, text="Point name:")
     self.label1.grid(row=0, column=0, sticky="nsew")
@@ -100,6 +106,34 @@ class PointGui:
     self.saveButton =   tk.Button(self.master, text="Save", command=self.savePoints)
     self.saveButton.grid(row=self.buttonRow, column=self.buttonColumn+3, sticky="nsew")
 
+    # add move to point button
+    self.moveToPointButton = tk.Button(self.master, text="Move to point", command=self.moveToPoint)
+    self.moveToPointButton.grid(row=self.speedButtonRow, column=self.speedButtonColumn, sticky="nsew")
+
+    # add set TCP speed entry
+    self.tcpSpeedLabel = tk.Label(self.master, text="TCP speed [mm/s]")
+    self.tcpSpeedLabel.grid(row=self.speedButtonRow, column=self.speedButtonColumn+2, sticky="n")
+    self.tcpSpeed = tk.StringVar(self.master)
+    self.tcpSpeed.set("20")
+    self.tcpSpeedEntry = tk.Entry(self.master, textvariable=self.tcpSpeed, width=10)
+    self.tcpSpeedEntry.grid(row=self.speedButtonRow, column=self.speedButtonColumn+2, sticky="s", pady=8)
+
+    # add set angle speed entry
+    self.angleSpeedLabel = tk.Label(self.master, text="Angle speed [deg/s]")
+    self.angleSpeedLabel.grid(row=self.speedButtonRow, column=self.speedButtonColumn+3, sticky="n")
+    self.angleSpeed = tk.StringVar(self.master)
+    self.angleSpeed.set("20")
+    self.angleSpeedEntry = tk.Entry(self.master, textvariable=self.angleSpeed, width=10)
+    self.angleSpeedEntry.grid(row=self.speedButtonRow, column=self.speedButtonColumn+3, sticky="s", pady=8)
+
+    # add dropdown list to choose between linear and joint movement
+    self.moveType = tk.StringVar(self.master)
+    self.moveType.set("Linear")
+    self.moveTypeMenu = tk.OptionMenu(self.master, self.moveType, "Linear", "Joint")
+    self.moveTypeMenu.grid(row=self.speedButtonRow, column=self.speedButtonColumn+1, sticky="nsew")
+
+
+
   def updateOptionMenu(self):
     self.pointName = tk.StringVar(self.master)
     self.pointName.set(self.points.points['name'].values[0])
@@ -144,6 +178,27 @@ class PointGui:
       self.coordValue -= 0.1
 
     return self.coordValue
+
+  def moveToPoint(self):
+    if self.robot != None:
+      # if point type is coordinate
+      if self.pointType.get() == 'coordinate':
+        if self.moveType.get() == 'Linear':
+          self.robot.moveL(pose=[self.pointX.get(), self.pointY.get(), self.pointZ.get(),
+                                 self.pointRoll.get(), self.pointPitch.get(), self.pointYaw.get()],
+                                 speed=self.tcpSpeed.get())
+        elif self.moveType.get() == 'Joint':
+          self.robot.moveJ(pose=[self.pointX.get(), self.pointY.get(), self.pointZ.get(),
+                                 self.pointRoll.get(), self.pointPitch.get(), self.pointYaw.get()],
+                                 pointType=self.pointType.get(), speed=self.angleSpeed.get())
+      
+      elif self.pointType.get() == 'angle':
+        self.robot.moveJ(pose=[self.pointX.get(), self.pointY.get(), self.pointZ.get(),
+                                self.pointRoll.get(), self.pointPitch.get(), self.pointYaw.get()],
+                                pointType=self.pointType.get(), speed=self.angleSpeed.get())
+        
+    else:
+      print("Robot not connected")
 
   def addPoint(self):
     # make new window to enter point name and type
@@ -222,15 +277,21 @@ class PointGui:
 
 
 
-
   
 
 
 
-def main():
+def mainRobot():
+  robot = rd.Robot(ROBOT_IP)
+  gui = PointGui(robot=robot)
+
+  gui.master.mainloop()
+
+def mainGUI():
   gui = PointGui()
 
   gui.master.mainloop()
 
 if __name__ == "__main__":
-  main()
+  #mainRobot()
+  mainGUI()
