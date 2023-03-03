@@ -218,6 +218,7 @@ class Robot:
         :param is_radian: if True, angles are in radians
         :return: None
         '''
+
         if len(pose) == 7:
             # get pointType from pose
             pointType = pose[6]
@@ -250,9 +251,13 @@ class Robot:
         elif pointType == 'angle':
             if pose != None:
                 self.robot.set_servo_angle(angle=pose , speed=speed, wait=wait, radius=radius, is_radian=False)
-
         else:
             raise Exception('Wrong point type')
+
+        code, pose = self.robot.get_inverse_kinematics(
+            pose, input_is_radian=is_radian, return_is_radian=False)
+        self.robot.set_servo_angle(
+            angle=pose, speed=speed, wait=wait, radius=radius, is_radian=False)
 
 
     def moveJoint(self, joint1=None, joint2=None, joint3=None, joint4=None, joint5=None, joint6=None,
@@ -281,6 +286,23 @@ class Robot:
             self.robot.set_servo_angle(angle=pose, speed=speed, wait=wait, radius=radius, is_radian=is_radian)
         else:
             raise Exception('Wrong point type')
+
+    def pallet(self, pallet, robot, index=None):
+        self.setWorldOffset(pallet.worldOffset, is_radian=False)
+
+        if index == None:
+            index = pallet.counter
+
+        position = pallet.localPositions[index].pose()
+        position[2] -= 10
+
+        robot.moveJ(pose=position, speed=SPEED_VERY_VERY_FAST, wait=True)
+        robot.moveL(z=10, relative=True, speed=SPEED_SLOW, wait=True)
+        robot.gripperOpen()
+        robot.moveL(z=-10, relative=True, speed=SPEED_SLOW, wait=True)
+        
+        self.robot.set_servo_angle(
+            angle=pose, speed=speed, wait=wait, radius=radius, is_radian=is_radian)
 
     def pallet(self, pallet, robot, index=None):
         self.setWorldOffset(pallet.worldOffset, is_radian=False)
