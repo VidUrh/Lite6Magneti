@@ -40,7 +40,7 @@ class pointHandler:
     if pointName in self.points['name'].values:
       # edit point with same name (use old pointType)
       print(self.points.loc[self.points['name'] == pointName, 'x':'type'])
-      self.points.loc[self.points['name'] == pointName, 'x':'yaw'] = pointPosition
+      self.points.loc[self.points['name'] == pointName, 'x':'type'] = pointPosition
       
       
     else:
