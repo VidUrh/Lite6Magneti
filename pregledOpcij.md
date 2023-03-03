@@ -6,6 +6,27 @@ Podajalec ohišij je lahko "feeder" in pošilja ohišja kar direktno v robotov g
 
 |                     	| +                           	| -                                                                                                            	 |
 |---------------------	|-----------------------------	|--------------------------------------------------------------------------------------------------------------	 |
-| Vibrator v linijo   	| + enostavnost izvedbe       	| - Počasen <br> - Človek polni zalogovnik                                                                     	 | 
-| Feeder              	| + hitrost (manj gibov) <br> 	| - Možne težave ker mora biti cevka vedno povezana na vrh robota<br>- Težave ker je treba magnet obrniti navzgor| 
-| Pobiranje iz škatel 	| + Minimalno človeškega dela 	| - Zahtevnejša in počasnejša implementacija                                                                   	 |
+| Uporaba vibratorja   	| + enostavnost izvedbe       	| - Počasen <br> - Človek polni zalogovnik                                                                     	 | 
+| Feeder (direktno na tcp) | + hitrost (manj gibov) <br> 	| - Možne težave ker mora biti cevka vedno povezana na vrh robota<br>- Težave ker je treba magnet obrniti navzgor <br>3- Dodatna komponenta, višja cena <br>- Čas dobavljivosti je vprašljiv| 
+| Pobiranje iz škatel 	| + Brez vibratorja <br>+ Cenejša izvedba 	| - Zahtevnejša in počasnejša implementacija                                                                   	 |
+
+## Izvedba z rotacijskim vibratorjem
+### Pozicija ohišja
+Ohišje je lahko obrnjeno z špico navzgor ali navzdol. Predpostavimo da dispenzer nesmemo obračati.
+
+|                     	| +                           	| -                                                                                                            	 |
+|---------------------	|-----------------------------	|--------------------------------------------------------------------------------------------------------------	 |
+| Navzgor     | + Lažje prijemanje       	| - nepotrebno obračanje robota <br> - počasnejši cikel | 
+| Navzdol     | + Manj obračanja <br> + Krajši cikel         	| - Težje prijemanj |
+
+## Pobiranje magnetov
+Ena izmed opcije je tudi, da robot pobira magnete.
+To bi bilo izvedljivo z nekakšnim dvojnim gripperjem.
+Koraki ideje:
+  1. Robot pobere ohišje oz. mu ga dostavi feeder
+  2. Nanos lepila na ohišje
+  3. Pobere magnet (magnet bi bi la griperju nameščen tik nad ohišjem, tako da bi bil že pozicioniran na luknjo)
+  4. Robot se prestavi na magnetno ploščo in se ji približa.
+  5. Tik nad ploščo spusti magnet in istočasno pritisne ohišje do plošče.
+
+Pri tej izvedbi je velika prednost v tem da je magnet že pozicionitan točno pod luknjo ohišja, saj ga tam spusti gripper.
