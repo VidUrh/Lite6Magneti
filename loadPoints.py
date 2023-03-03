@@ -12,7 +12,7 @@ import csv
 
 
 class Point:
-    def __init__(self, name, x, y, z, rx, ry, rz):
+    def __init__(self, name, x, y, z, rx, ry, rz, type):
         self.name = name
 
         self.x = float(x)
@@ -21,6 +21,7 @@ class Point:
         self.rx = float(rx)
         self.ry = float(ry)
         self.rz = float(rz)
+        self.type = type
 
     def __str__(self):
         return f"{self.name}: ({self.x}, {self.y}, {self.z}, {self.rx}, {self.ry}, {self.rz})"
@@ -29,12 +30,15 @@ class Point:
 
     def pose(self):
         return [self.x, self.y, self.z, self.rx, self.ry, self.rz]
+    
+    def pointType(self):
+        return self.type
 
 
 # load the points from the csv file into dictionary
 print("Loading points...")
 points = {point[0]: Point(point[0], point[1], point[2], point[3], point[4],
-                          point[5], point[6]) for point in csv.reader(open("points.csv")) if point[0] != "name"}
+                          point[5], point[6], point[7]) for point in csv.reader(open("points.csv")) if point[0] != "name"}
 
 print(*points.values(), sep='\n')
 
