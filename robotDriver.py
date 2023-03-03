@@ -254,12 +254,6 @@ class Robot:
         else:
             raise Exception('Wrong point type')
 
-        code, pose = self.robot.get_inverse_kinematics(
-            pose, input_is_radian=is_radian, return_is_radian=False)
-        self.robot.set_servo_angle(
-            angle=pose, speed=speed, wait=wait, radius=radius, is_radian=False)
-
-
     def moveJoint(self, joint1=None, joint2=None, joint3=None, joint4=None, joint5=None, joint6=None,
                   speed=None, pose=None, pointType=None, wait=True, radius=0, is_radian=False):
         '''
