@@ -42,9 +42,9 @@ class Pallet:
         self.rows = rows
         self.columns = columns
 
-        self.offsetX = 2.15
-        self.offsetY = 8.3
-        self.offsetZ = -0.1
+        self.offsetX = 0
+        self.offsetY = 0
+        self.offsetZ = 0
 
         self.localPositions = []
         self.rotation = self.getRotation()
@@ -77,7 +77,8 @@ class Pallet:
                           0,
                           0,
                           0,
-                          0
+                          0,
+                          type="coordinate"
                           )
                 )
         return localPositions
@@ -281,36 +282,20 @@ class Robot:
         else:
             raise Exception('Wrong point type')
 
-    def pallet(self, pallet, robot, index=None):
+    def pallet(self, pallet, robot, speedFactor, index=None):
         self.setWorldOffset(pallet.worldOffset, is_radian=False)
 
         if index == None:
             index = pallet.counter
 
         position = pallet.localPositions[index].pose()
+        pointType = pallet.localPositions[index].pointType()
         position[2] -= 10
 
-        robot.moveJ(pose=position, speed=SPEED_VERY_VERY_FAST, wait=True)
-        robot.moveL(z=10, relative=True, speed=SPEED_SLOW, wait=True)
-        robot.gripperOpen()
-        robot.moveL(z=-10, relative=True, speed=SPEED_SLOW, wait=True)
-        
-        self.robot.set_servo_angle(
-            angle=pose, speed=speed, wait=wait, radius=radius, is_radian=is_radian)
-
-    def pallet(self, pallet, robot, index=None):
-        self.setWorldOffset(pallet.worldOffset, is_radian=False)
-
-        if index == None:
-            index = pallet.counter
-
-        position = pallet.localPositions[index].pose()
-        position[2] -= 10
-
-        robot.moveJ(pose=position, speed=SPEED_VERY_VERY_FAST, wait=True)
-        robot.moveL(z=10, relative=True, speed=SPEED_SLOW, wait=True)
-        robot.gripperOpen()
-        robot.moveL(z=-10, relative=True, speed=SPEED_SLOW, wait=True)
+        self.moveJ(pose=position, pointType=pointType, speed=SPEED_VERY_VERY_FAST*speedFactor, wait=True)
+        self.moveL(z=10, relative=True, speed=SPEED_SLOW*speedFactor, wait=True)
+        self.gripperOpen()
+        self.moveL(z=-10, relative=True, speed=SPEED_SLOW*speedFactor, wait=True)
 
         pallet.counter += 1
         self.setWorldOffset([0, 0, 0, 0, 0, 0], is_radian=False)
