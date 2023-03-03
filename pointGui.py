@@ -127,6 +127,10 @@ class PointGui:
     self.saveButton =   tk.Button(self.master, text="Save", command=self.savePoints)
     self.saveButton.grid(row=self.buttonRow, column=self.buttonColumn+3, sticky="nsew")
 
+    # add read robot position button
+    self.readRobotPositionButton = tk.Button(self.master, text="Read robot position", command=self.readRobotPosition)
+    self.readRobotPositionButton.grid(row=self.speedButtonRow, column=self.speedButtonColumn-1, sticky="nsew")
+
     # add move to point button
     self.moveToPointButton = tk.Button(self.master, text="Move to point", command=self.moveToPoint)
     self.moveToPointButton.grid(row=self.speedButtonRow, column=self.speedButtonColumn, sticky="nsew")
@@ -152,6 +156,11 @@ class PointGui:
     self.moveType.set("Linear")
     self.moveTypeMenu = tk.OptionMenu(self.master, self.moveType, "Linear", "Joint")
     self.moveTypeMenu.grid(row=self.speedButtonRow, column=self.speedButtonColumn+1, sticky="nsew")
+
+    # add gripper button
+    self.gripperButton = tk.Button(self.master, text="Gripper", command=self.gripper)
+    self.gripperButton.grid(row=self.speedButtonRow, column=self.speedButtonColumn+4, sticky="nsew")
+    self.gripperOldState = 0
 
 
 
@@ -255,24 +264,62 @@ class PointGui:
 
     return self.coordValue
 
+  def readRobotPosition(self):
+    if self.robot != None:
+      if self.moveType.get() == "Linear":
+        self.robotPosition = self.robot.getPosition()
+      elif self.moveType.get() == "Joint":
+        self.robotPosition = self.robot.getJoints()
+      
+      self.pointX.delete(0, tk.END)
+      self.pointX.insert(0, self.robotPosition[0])
+      self.pointY.delete(0, tk.END)
+      self.pointY.insert(0, self.robotPosition[1])
+      self.pointZ.delete(0, tk.END)
+      self.pointZ.insert(0, self.robotPosition[2])
+      self.pointRoll.delete(0, tk.END)
+      self.pointRoll.insert(0, self.robotPosition[3])
+      self.pointPitch.delete(0, tk.END)
+      self.pointPitch.insert(0, self.robotPosition[4])
+      self.pointYaw.delete(0, tk.END)
+      self.pointYaw.insert(0, self.robotPosition[5])
+      self.pointType.delete(0, tk.END)
+      if self.moveType.get() == "Linear":
+        self.pointType.insert(0, 'coordinate')
+      elif self.moveType.get() == "Joint":
+        self.pointType.insert(0, 'angle')
+
   def moveToPoint(self):
     if self.robot != None:
       # if point type is coordinate
       if self.pointType.get() == 'coordinate':
         if self.moveType.get() == 'Linear':
-          self.robot.moveL(pose=[self.pointX.get(), self.pointY.get(), self.pointZ.get(),
-                                 self.pointRoll.get(), self.pointPitch.get(), self.pointYaw.get()],
-                                 speed=self.tcpSpeed.get())
+          self.robot.moveL(pose=[float(self.pointX.get()), float(self.pointY.get()), float(self.pointZ.get()),
+                                  float(self.pointRoll.get()), float(self.pointPitch.get()), float(self.pointYaw.get())],
+                                  speed=float(self.tcpSpeed.get()))
         elif self.moveType.get() == 'Joint':
-          self.robot.moveJ(pose=[self.pointX.get(), self.pointY.get(), self.pointZ.get(),
-                                 self.pointRoll.get(), self.pointPitch.get(), self.pointYaw.get()],
-                                 pointType=self.pointType.get(), speed=self.angleSpeed.get())
+          self.robot.moveJ(pose=[float(self.pointX.get()), float(self.pointY.get()), float(self.pointZ.get()),
+                                  float(self.pointRoll.get()), float(self.pointPitch.get()), float(self.pointYaw.get())],
+                                  pointType=self.pointType.get(), speed=float(self.angleSpeed.get()))
       
       elif self.pointType.get() == 'angle':
-        self.robot.moveJ(pose=[self.pointX.get(), self.pointY.get(), self.pointZ.get(),
-                                self.pointRoll.get(), self.pointPitch.get(), self.pointYaw.get()],
-                                pointType=self.pointType.get(), speed=self.angleSpeed.get())
+        self.robot.moveJ(pose=[float(self.pointX.get()), float(self.pointY.get()), float(self.pointZ.get()),
+                               float(self.pointRoll.get()), float(self.pointPitch.get()), float(self.pointYaw.get())],
+                               pointType=self.pointType.get(), speed=float(self.angleSpeed.get()))
+      else:
+        print("point type not found")
                                 
+    else:
+      print("Robot not connected")
+
+  def gripper(self):
+    if self.robot != None:
+      if self.gripperOldState == 0:
+        self.robot.gripperOpen()
+        self.gripperOldState = 1
+      elif self.gripperOldState == 1:
+        self.robot.gripperClose()
+        self.gripperOldState = 0
     else:
       print("Robot not connected")
 
@@ -336,7 +383,7 @@ class PointGui:
   def editPoint(self):
     self.points.editPoint(self.pointName.get(), [self.pointX.get(), self.pointY.get(),
                               self.pointZ.get(), self.pointRoll.get(), self.pointPitch.get(),
-                              self.pointYaw.get()])
+                              self.pointYaw.get(), self.pointType.get()])
 
     pass
 
@@ -369,5 +416,5 @@ def mainGUI():
   gui.master.mainloop()
 
 if __name__ == "__main__":
-  #mainRobot()
-  mainGUI()
+  mainRobot()
+  #mainGUI()
