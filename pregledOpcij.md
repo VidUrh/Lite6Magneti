@@ -30,3 +30,12 @@ Koraki ideje:
   5. Tik nad ploščo spusti magnet in istočasno pritisne ohišje do plošče.
 
 Pri tej izvedbi je velika prednost v tem da je magnet že pozicionitan točno pod luknjo ohišja, saj ga tam spusti gripper.
+
+## Prvi prototip in testi
+Z uFactory lite 6 robotom sva naredila program in test, za zgoraj omenjeni rotaciji ohišja.
+
+Čas cikla:
+  - navzgor 8,5 s (daljša pot zaradi rotacije ohišja za 180°)
+  - navzdol 7,3 s
+
+V tem ciklu je samo pobiranje, lepljenje in postavljanje ohišja na magnet (brez brisanja in dodatnih del)
