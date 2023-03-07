@@ -37,5 +37,8 @@ Z uFactory lite 6 robotom sva naredila program in test, za zgoraj omenjeni rotac
 Čas cikla:
   - navzgor 8,5 s (daljša pot zaradi rotacije ohišja za 180°)
   - navzdol 7,3 s
+  - navzdol + dispenzeer nad ohišji 5,2 s
+  - '+ pobiranje magnetov 9 s
+  - '+ brisanje po 30 min
 
 V tem ciklu je samo pobiranje, lepljenje in postavljanje ohišja na magnet (brez brisanja in dodatnih del)
