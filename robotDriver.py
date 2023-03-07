@@ -198,11 +198,16 @@ class Robot:
         if pose != None:
             x, y, z, roll, pitch, yaw = pose
 
+        if relative == 'False':
+            relative = False
+        elif relative == 'True':
+            relative = True
+
         self.robot.set_position(x=x, y=y, z=z, roll=roll, pitch=pitch, yaw=yaw, speed=speed,
                                 relative=relative, radius=radius, wait=wait, mv_cmd=1)
 
     def moveJ(self, x=None, y=None, z=None, roll=None, pitch=None, yaw=None, pose=None, pointType=None, 
-              speed=None, wait=True, radius=0, is_radian=False):
+              speed=None, relative=False, wait=True, radius=0, is_radian=False):
         '''
         Move robot to position in joint motion
 
@@ -227,7 +232,7 @@ class Robot:
             # remove pointType from pose
             pose = pose[:6]
 
-        if pointType == 'coordinate':
+        if pointType == 'coordinate' and relative == False:
             if pose == None:
                 self.currentPosition = self.robot.get_position()
                 # check if any of the parameters are None and set them to current position
@@ -248,15 +253,17 @@ class Robot:
 
             code, pose = self.robot.get_inverse_kinematics(pose, input_is_radian=is_radian, return_is_radian=False)
             self.robot.set_servo_angle(angle=pose, speed=speed, wait=wait, radius=radius, is_radian=False)
+        elif pointType == 'coordinate' and relative == True:
+            raise Exception('Relative coordinate not implemented')
 
         elif pointType == 'angle':
             if pose != None:
-                self.robot.set_servo_angle(angle=pose , speed=speed, wait=wait, radius=radius, is_radian=False)
+                self.robot.set_servo_angle(angle=pose , speed=speed, wait=wait, radius=radius, relative=relative, is_radian=False)
         else:
             raise Exception('Wrong point type')
 
     def moveJoint(self, joint1=None, joint2=None, joint3=None, joint4=None, joint5=None, joint6=None,
-                  speed=None, pose=None, pointType=None, wait=True, radius=0, is_radian=False):
+                  speed=None, pose=None, pointType=None, relative=False, wait=True, radius=0, is_radian=False):
         '''
         Move robot to position with joint angles
 
@@ -278,7 +285,7 @@ class Robot:
             if pose == None:
                 pose = [joint1, joint2, joint3, joint4, joint5, joint6]
 
-            self.robot.set_servo_angle(angle=pose, speed=speed, wait=wait, radius=radius, is_radian=is_radian)
+            self.robot.set_servo_angle(angle=pose, speed=speed, wait=wait, radius=radius, relative=relative, is_radian=is_radian)
         else:
             raise Exception('Wrong point type')
 

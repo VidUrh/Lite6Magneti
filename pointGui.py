@@ -14,7 +14,7 @@ class PointGui:
     self.master.resizable(False, False)
     self.master.protocol("WM_DELETE_WINDOW", self.master.destroy)
     # Make 10x10 grid
-    self.cntColumns = 7
+    self.cntColumns = 8
     self.cntRows = 7
     for i in range(self.cntColumns):
       if i%2 == 0:
@@ -28,11 +28,8 @@ class PointGui:
     for i in range(self.cntRows):
       self.master.rowconfigure(i, weight=1)
 
-    # # draw grid lines
-    # for i in range(self.cntColumns):
-    #   tk.Frame(self.master, height=1, width=1, bg="blue").grid(row=0, column=i, rowspan=12, sticky="ns")
-    # for i in range(self.cntRows):
-    #   tk.Frame(self.master, height=1, width=1, bg="red").grid(row=i, column=0, columnspan=12, sticky="we")
+    self.robotOldPosition = [0, 0, 0, 0, 0, 0]
+    self.relativeFlag = False
 
     # ------------------ Labels ------------------
     self.coordRow = 2 # +1 is reserved for coord values
@@ -44,20 +41,23 @@ class PointGui:
 
     self.label1 = tk.Label(self.master, text="Point name:")
     self.label1.grid(row=0, column=0, sticky="nsew")
-    self.label4 = tk.Label(self.master, text="X/1")
-    self.label4.grid(row=self.coordRow, column=0, sticky="nsew")
-    self.label5 = tk.Label(self.master, text="Y/2	")
-    self.label5.grid(row=self.coordRow, column=1, sticky="nsew")
-    self.label6 = tk.Label(self.master, text="Z/3")
-    self.label6.grid(row=self.coordRow, column=2, sticky="nsew")
-    self.label7 = tk.Label(self.master, text="Roll/4")
-    self.label7.grid(row=self.coordRow, column=3, sticky="nsew")
-    self.label8 = tk.Label(self.master, text="Pitch/5")
-    self.label8.grid(row=self.coordRow, column=4, sticky="nsew")
-    self.label9 = tk.Label(self.master, text="Yaw/6")
-    self.label9.grid(row=self.coordRow, column=5, sticky="nsew")
-    self.label2 = tk.Label(self.master, text="Point type:")
-    self.label2.grid(row=self.coordRow, column=6, sticky="nsew")
+    self.label2 = tk.Label(self.master, text="X/1")
+    self.label2.grid(row=self.coordRow, column=0, sticky="nsew")
+    self.label3 = tk.Label(self.master, text="Y/2	")
+    self.label3.grid(row=self.coordRow, column=1, sticky="nsew")
+    self.label4 = tk.Label(self.master, text="Z/3")
+    self.label4.grid(row=self.coordRow, column=2, sticky="nsew")
+    self.label5 = tk.Label(self.master, text="Roll/4")
+    self.label5.grid(row=self.coordRow, column=3, sticky="nsew")
+    self.label6 = tk.Label(self.master, text="Pitch/5")
+    self.label6.grid(row=self.coordRow, column=4, sticky="nsew")
+    self.label7 = tk.Label(self.master, text="Yaw/6")
+    self.label7.grid(row=self.coordRow, column=5, sticky="nsew")
+    self.label8 = tk.Label(self.master, text="Point type:")
+    self.label8.grid(row=self.coordRow, column=6, sticky="nsew")
+    self.label9 = tk.Label(self.master, text="Relative:")
+    self.label9.grid(row=self.coordRow, column=7, sticky="nsew")
+
 
     self.points = ph.pointHandler()
 
@@ -66,7 +66,7 @@ class PointGui:
 
     # make empty entry for point position
     self.pointPosition = []
-    for i in range(7):
+    for i in range(8):
       self.pointPosition.append(tk.StringVar(self.master))
       self.pointPosition[i].set(self.points.points.iloc[0, i+1])
     
@@ -87,6 +87,8 @@ class PointGui:
     self.pointYaw.grid(row=self.coordRow+1, column=5, sticky="w")
     self.pointType = tk.Entry(self.master, textvariable=self.pointPosition[6], width=self.entryWidth)
     self.pointType.grid(row=self.coordRow+1, column=6, sticky="w")
+    self.pointRelative = tk.Entry(self.master, textvariable=self.pointPosition[7], width=self.entryWidth)
+    self.pointRelative.grid(row=self.coordRow+1, column=7, sticky="w")
 
     self.PLUS_COLOR = "#43b0f1"
     self.MINUS_COLOR = "#43b0f1"
@@ -162,19 +164,33 @@ class PointGui:
     self.gripperButton.grid(row=self.speedButtonRow, column=self.speedButtonColumn+4, sticky="nsew")
     self.gripperOldState = 0
 
+    # add relative movement button
+    self.relativeMovementButton = tk.Button(self.master, text="Relative movement", command=self.relativeMovement)
+    self.relativeMovementButton.grid(row=self.speedButtonRow, column=self.speedButtonColumn+5, sticky="nsew")
+    self.relativeMovementOldState = 0
 
+    ## INIT
+    self.OFF_COLOR = "red"
+    self.ON_COLOR = "green"
+    print(self.pointRelative.get())
+    if int(self.pointRelative.get()) == 0:
+      self.relativeFlag = False
+      self.relativeMovementButton.config(bg=self.OFF_COLOR, relief=tk.SUNKEN)
+
+    elif int(self.pointRelative.get()) == 1:
+      self.relativeFlag = True
+      self.relativeMovementButton.config(bg=self.ON_COLOR, relief=tk.RAISED)
 
   def updateOptionMenu(self):
     self.pointName = tk.StringVar(self.master)
     self.pointName.set(self.points.points['name'].values[0])
     self.pointNameMenu = tk.OptionMenu(self.master, self.pointName, 
-                                       *self.points.points['name'].values, command=self.updatePointPosition)
+                                       *self.points.points['name'].values, command=self.updatePoints)
     self.pointNameMenu.grid(row=0, column=1, sticky="nsew")
 
-  def updatePointPosition(self, pointName):
-    print(self.pointName)
+  def updatePoints(self, pointName):
     self.pointPosition = []
-    for i in range(7):
+    for i in range(8):
       self.pointPosition.append(tk.StringVar(self.master))
       # get point position of pointName
       self.pointPosition[i].set(self.points.points[self.points.points['name'] == pointName].iloc[0, i+1])
@@ -186,6 +202,15 @@ class PointGui:
     self.pointPitch.config(textvariable=self.pointPosition[4])
     self.pointYaw.config(textvariable=self.pointPosition[5])
     self.pointType.config(textvariable=self.pointPosition[6])
+    self.pointRelative.config(textvariable=self.pointPosition[7])
+
+    if int(self.pointRelative.get()) == 0:
+      self.relativeFlag = False
+      self.relativeMovementButton.config(bg=self.OFF_COLOR, relief=tk.SUNKEN)
+
+    elif int(self.pointRelative.get()) == 1:
+      self.relativeFlag = True
+      self.relativeMovementButton.config(bg=self.ON_COLOR, relief=tk.RAISED)
 
   def changePointPosition(self, whichCoord, operation):
     self.coordValue = 0
@@ -296,7 +321,7 @@ class PointGui:
         if self.moveType.get() == 'Linear':
           self.robot.moveL(pose=[float(self.pointX.get()), float(self.pointY.get()), float(self.pointZ.get()),
                                   float(self.pointRoll.get()), float(self.pointPitch.get()), float(self.pointYaw.get())],
-                                  speed=float(self.tcpSpeed.get()))
+                                  relative=int(self.pointRelative.get()), speed=float(self.tcpSpeed.get()))
         elif self.moveType.get() == 'Joint':
           self.robot.moveJ(pose=[float(self.pointX.get()), float(self.pointY.get()), float(self.pointZ.get()),
                                   float(self.pointRoll.get()), float(self.pointPitch.get()), float(self.pointYaw.get())],
@@ -322,6 +347,33 @@ class PointGui:
         self.gripperOldState = 0
     else:
       print("Robot not connected")
+
+  def relativeMovement(self):
+    if self.relativeFlag == False:
+      self.relativeFlag = True
+      self.relativeMovementButton.config(bg=self.ON_COLOR, relief=tk.RAISED)
+
+      self.pointX.delete(0, tk.END)
+      self.pointX.insert(0, 0)
+      self.pointY.delete(0, tk.END)
+      self.pointY.insert(0, 0)
+      self.pointZ.delete(0, tk.END)
+      self.pointZ.insert(0, 0)
+      self.pointRoll.delete(0, tk.END)
+      self.pointRoll.insert(0, 0)
+      self.pointPitch.delete(0, tk.END)
+      self.pointPitch.insert(0, 0)
+      self.pointYaw.delete(0, tk.END)
+      self.pointYaw.insert(0, 0)
+
+      self.pointRelative.delete(0, tk.END)
+      self.pointRelative.insert(0, 1)
+
+    elif self.relativeFlag == True:
+      self.relativeFlag = False
+      self.relativeMovementButton.config(bg=self.OFF_COLOR, relief=tk.SUNKEN)
+      self.pointRelative.delete(0, tk.END)
+      self.pointRelative.insert(0, 0)
 
   def addPoint(self):
     # make new window to enter point name and type
@@ -368,7 +420,7 @@ class PointGui:
         # add point to points
         self.points.addPoint(pointName, pointType, [self.pointX.get(), self.pointY.get(),
                              self.pointZ.get(), self.pointRoll.get(), self.pointPitch.get(),
-                             self.pointYaw.get()])
+                             self.pointYaw.get()], relative=int(self.pointRelative.get()))
         
         # update point dropdown menu
         self.updateOptionMenu()
@@ -383,7 +435,8 @@ class PointGui:
   def editPoint(self):
     self.points.editPoint(self.pointName.get(), [self.pointX.get(), self.pointY.get(),
                               self.pointZ.get(), self.pointRoll.get(), self.pointPitch.get(),
-                              self.pointYaw.get(), self.pointType.get()])
+                              self.pointYaw.get(), self.pointType.get()], relative=int(self.pointRelative.get()))
+    print(self.pointRelative.get())
 
     pass
 
@@ -396,11 +449,6 @@ class PointGui:
 
   def savePoints(self):
     self.points.savePoints()
-
-
-
-
-  
 
 
 
