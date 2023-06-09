@@ -7,12 +7,12 @@ import time
 from loadPoints import *
 import stepperSerial
 
-STEVILO_OHISIJ_Y = 2
-STEVILO_OHISIJ_X = 5
+STEVILO_OHISIJ_Y = 3
+STEVILO_OHISIJ_X = 1
 OHISJE_OFFSET_X = 26
 OHISJE_OFFSET_Y = -18
 
-SPEED_FACTOR = 1.5
+SPEED_FACTOR = 0.5
 SPEED_VERY_SLOW = SPEED_VERY_SLOW*SPEED_FACTOR
 SPEED_SLOW = SPEED_SLOW*SPEED_FACTOR
 SPEED_MIDDLE = SPEED_MIDDLE*SPEED_FACTOR
@@ -44,7 +44,7 @@ def main():
     for i in range(STEVILO_OHISIJ_Y):
       odloziMagnet = points['odloziMagnet'].pose()
       odloziMagnet[1] = odloziMagnet[1] + OHISJE_OFFSET_Y*i
-      for i in range(STEVILO_OHISIJ_X):
+      for j in range(STEVILO_OHISIJ_X):
         start = time.time()
         ###############################
         # start counting time
@@ -72,7 +72,7 @@ def main():
         
         #robot.moveJ(pose = points['nadKovinskoPlosco'].pose(), pointType=points['nadKovinskoPlosco'].pointType() , speed=SPEED_VERY_VERY_FAST, radius=150, wait=False)
         stepper.send()
-        odloziMagnet[0] = odloziMagnet[0] + OHISJE_OFFSET_X
+        odloziMagnet[0] = odloziMagnet[0] + OHISJE_OFFSET_X*j
         print(odloziMagnet)
         robot.moveJ(pose = odloziMagnet, pointType=points['odloziMagnet'].pointType(), speed=SPEED_VERY_FAST, radius=2, wait=False)
         robot.moveL(pose = points['odloziMagnetRel'].pose(), relative=True, speed=SPEED_MIDDLE, wait=True)
@@ -87,15 +87,16 @@ def main():
         # calculate time
         end = time.time()
         print("Time: ", end - start)
-      
 
 
     for i in range(STEVILO_OHISIJ_Y):
-      odloziMagnet = points['odloziMagnet'].pose()
-      odloziMagnet[1] = odloziMagnet[1] + OHISJE_OFFSET_Y*i
-      for i in range(STEVILO_OHISIJ_X):
+      poberiMagnet = points['NadPobiranjeKosov'].pose()
+      poberiMagnet[1] = poberiMagnet[1] + OHISJE_OFFSET_Y*i
+      for j in range(STEVILO_OHISIJ_X):
         start = time.time()
-        odloziMagnet[0] = odloziMagnet[0] + OHISJE_OFFSET_X
+        odloziMagnet[0] = poberiMagnet[0] + OHISJE_OFFSET_X*j
+        robot.moveJ(pose = poberiMagnet, pointType=points['NadPobiranjeKosov'].pointType(), speed=SPEED_VERY_FAST, radius=2, wait=False)
+        robot.gripperOpen()
 
     robot.moveJ(pose = points['nadMagnetom3'].pose(), pointType=points['nadMagnetom3'].pointType(), speed=50, wait=True)
     

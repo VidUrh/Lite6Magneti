@@ -1,7 +1,7 @@
 name,x,y,z,roll,pitch,yaw,type,relative
 home,0.0,0.0,0.0,0.0,0.0,0.0,coordinate,0
 nadOhisjem,-89.449254,25.115834,94.333261,-181.602411,109.787251,-0.093278,angle,0
-prijemOhisja,5,-331,582.5,-1.500004,0.999983,-88.999998,coordinate,0
+prijemOhisja,5.0,-331.0,582.5,-1.500004,0.999983,-88.999998,coordinate,0
 pritisneOhisje,0.0,0.0,2.5,0.0,0.0,0.0,coordinate,1
 nadOhisjem2,0.0,0.0,-0.8,0.0,0.0,0.0,coordinate,1
 doLepila1,1.8,21.7,0.5,0.0,0.0,0.0,coordinate,1
@@ -22,12 +22,13 @@ podOhisjeRel,0.0,0.0,-0.7,0.0,0.0,0.0,coordinate,1
 podLepiloRel,3.0,23.0,0.0,0.0,0.0,0.0,coordinate,1
 nadKovinskoPlosco,-37.294281,7.359987,56.211571,-1.922617,25.0763,143.042008,angle,0
 odloziMagnet,-50.0,-150.0,26.0,-179.0,0.0,90.0,coordinate,0
-nadOdlozenMagnetRel,0.0,0.0,4,0.0,0.0,0.0,coordinate,1
-ohisjeNadMagnetRel,13.7,-0.2,-0.9,0,0.0,0.0,coordinate,1
-poloziOhisjeRel,1,0.0,-4,3.0,0.0,0.0,coordinate,1
+nadOdlozenMagnetRel,0.0,0.0,4.0,0.0,0.0,0.0,coordinate,1
+ohisjeNadMagnetRel,13.7,-0.2,-0.9,0.0,0.0,0.0,coordinate,1
+poloziOhisjeRel,1.0,0.0,-4.0,3.0,0.0,0.0,coordinate,1
 poloziOhisjeRot,0.0,0.0,0.0,0.0,0.0,70.0,angle,1
 nadMagnetom0,-80.047418,26.393072,94.173062,-1.062608,-112.04373,169.647074,angle,0
 nadMagnetom3,-90.622786,4.941188,48.081243,-187.097191,101.751689,0.0,angle,0
 nadOhisjeRel,0.0,0.0,10.0,0.0,0.0,0.0,coordinate,1
 ohisjeNadMagKot,0.0,0.0,0.0,0.0,-3.0,0.0,coordinate,1
 odloziMagnetRel,0.0,0.0,-6.0,0.0,0.0,0.0,coordinate,1
+NadPobiranjeKosov,-34.0,-147.0,24.0,-178.999979,-0.0,89.999981,coordinate,0
